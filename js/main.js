@@ -35,31 +35,31 @@ function getCookie(cname) {
 
 function logout() {
     document.cookie="quizyUserRole=-1";
-    $.ajax({
-        url: "indexBody.html", 
+    fetch("indexBody.html").then(data => {
         context: document.body,
         success: function(response) {
-            $("#indexBody").html(response);
+            document.querySelector("#indexBody").html(response);
         }
     });
 }
 
 function dash() {
     if(getCookie("quizyUserRole")=="0"){
-        $.ajax({
-            url: "dashboard.html", 
+        fetch("dashboard.html").then(data => {
             context: document.body,
             success: function(response) {
-                $("#mainBody").html(response);
+            document.querySelector("#mainBody").html(response);
                 admin();
+        
+          });
+            
             }
         });
     }else if (getCookie("quizyUserRole")=="1"){
-        $.ajax({
-            url: "dashboardStudent.html",
+        fetch("dashboardStudent.html").then(data => {
             context: document.body,
             success: function(response) {
-                $("#mainBody").html(response);
+                document.querySelector("#mainBody").html(response);
                 student();
             }
         });
@@ -67,11 +67,11 @@ function dash() {
 }
 
 function admin() {
-    $.ajax({
+    fetch("questionBank.html").then(data => {
         url: "questionBank.html", 
         context: document.body,
         success: function(response) {
-            $("#subBody").html(response);
+            document.querySelector("#subBody").html(response);
             document.getElementById("welcStr").innerHTML = "Welcome "+getCookie("quizyUser");
             questionUpdate('populateQus(this)');
         }
@@ -184,7 +184,7 @@ function closeAlert(){
         
     });
 
-})(jQuery);
+})(jQuery);//nikita
 
 //QuestionBank
 function add() {
@@ -221,7 +221,7 @@ function save() {
     getData(dataJSON,"php/addQuestion.php",function(resJSON){
         var response = JSON.parse(resJSON);
         if(response.res == "success"){
-            $('#alertmsg').html('<div id="alerts"><span id="closebtn" onclick="closeAlert()">&times;</span>Successfully saved the question!</div>');
+            document.querySelector('#alertmsg').html('<div id="alerts"><span id="closebtn" onclick="closeAlert()">&times;</span>Successfully saved the question!</div>');
             questionUpdate('populateQus(this)');
         }else{
             console.log(resJSON);
@@ -240,7 +240,7 @@ function questionUpdate(destinationFunc) {
         for(var i = 1; i < Object.keys(response).length; i++){
             tBody += '<tr class="quesRow" onclick="'+destinationFunc+'" data-id='+response[i].id+'><td>'+response[i].question+'</td><td>'+response[i].type+'</td><td>'+response[i].diff+'</td></tr>';
             var dnExists = true;
-            $('#type > option').each(function() {
+            document.querySelector('#type > option').each(function() {
                 if(this.value.localeCompare(response[i].type) == 0){
                     dnExists = false;
                 }
@@ -311,15 +311,14 @@ function filterKey(e) {
 
 //Desing Exam
 function designExam() {
-    $.ajax({
-        url: "design.html", 
-        context: document.body,
+   fetch("design.html")
+  .then(data => {
+   context: document.body,
         success: function(response) {
-            $("#subBody").html(response);
+            document.querySelector("#subBody").html(response);
             questionUpdate('populateExam(this)');
             loadExam();
-        }
-    });
+  });
 
 }
 
@@ -393,11 +392,11 @@ function saveExam(){
 
 //Manage Exams  --  add submissions look up
 function manageExams() {
-    $.ajax({
-        url: "exams.html", 
+    fetch("exams.html")
+    .then(data => { 
         context: document.body,
         success: function(response) {
-            $("#subBody").html(response);
+            querySelector("#subBody").html(response);
             releaseManagement();
             examSubPopu();
         }
